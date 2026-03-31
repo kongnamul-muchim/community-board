@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  password     String
+  nickname     String        @unique
+  role         String        @default("member")
+  profileImage String?
+  posts        Post[]
+  comments     Comment[]
+  reactions    Reaction[]
+  notifications Notification[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  posts       Post[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Post {
+  id          String      @id @default(cuid())
+  title       String
+  content     String
+  authorId    String
+  author      User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  imageUrls   String?
+  comments    Comment[]
+  reactions   Reaction[]
+  viewCount   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Comment {
+  id        String      @id @default(cuid())
+  content   String
+  authorId  String
+  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postId    String
+  post      Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentId  String?
+  parent    Comment?    @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[]   @relation("Replies")
+  reactions Reaction[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  type      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id           String   @id @default(cuid())
+  type         String
+  message      String
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRead       Boolean  @default(false)
+  relatedPostId String?
+  createdAt    DateTime @default(now())
+}
