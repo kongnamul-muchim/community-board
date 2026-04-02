@@ -15,7 +15,7 @@ export default function EditPostPage() {
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
   
-  const postId = searchParams.get('id') || ''
+  const postId = searchParams?.get('id') || ''
 
   useEffect(() => {
     if (!postId) {

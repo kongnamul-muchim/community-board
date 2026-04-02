@@ -39,7 +39,7 @@ export default function PostDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const searchParams = useSearchParams()
-  const postId = searchParams.get('id') || ''
+  const postId = searchParams?.get('id') || ''
   const router = useRouter()
   const { data: session } = useSession()
 

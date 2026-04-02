@@ -43,7 +43,7 @@ export class PostService {
     })
   }
 
-  async updatePost(id: string, title: string, content: string, userId: string, userRole: string, categoryId?: string, imageUrls?: string[]) {
+  async updatePost(id: string, title: string, content: string, userId: string, userRole: string, categoryId?: string | null, imageUrls?: string[]) {
     const post = await this.postRepository.findById(id)
     if (!post) throw new Error('게시글을 찾을 수 없습니다.')
 
@@ -54,7 +54,7 @@ export class PostService {
     return this.postRepository.update(id, { 
       title, 
       content, 
-      categoryId,
+      categoryId: categoryId ?? undefined,
       imageUrls: imageUrls !== undefined ? (imageUrls.length ? JSON.stringify(imageUrls) : null) : undefined
     })
   }

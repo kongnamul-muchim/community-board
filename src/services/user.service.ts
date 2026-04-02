@@ -55,7 +55,7 @@ export class UserService {
     }
   }
 
-  async updateProfile(userId: string, nickname?: string, profileImage?: string) {
+  async updateProfile(userId: string, nickname?: string, profileImage?: string | null) {
     if (nickname) {
       const existing = await this.userRepository.findByNickname(nickname)
       if (existing && existing.id !== userId) {
@@ -65,7 +65,7 @@ export class UserService {
 
     const updateData: { nickname?: string; profileImage?: string } = {}
     if (nickname) updateData.nickname = nickname
-    if (profileImage !== undefined) updateData.profileImage = profileImage
+    if (profileImage !== undefined) updateData.profileImage = profileImage ?? undefined
 
     return this.userRepository.updateProfile(userId, updateData)
   }

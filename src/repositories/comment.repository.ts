@@ -30,13 +30,13 @@ export class CommentRepository implements ICommentRepository {
     })
   }
 
-  async create(data: { content: string; authorId: string; postId: string; parentId?: string }): Promise<Comment & { author: { id: string; nickname: string } }> {
+  async create(data: { content: string; authorId: string; postId: string; parentId?: string }): Promise<any> {
     return prisma.comment.create({
       data,
       include: {
         author: { select: { id: true, nickname: true } }
       }
-    }) as Comment & { author: { id: string; nickname: string } }
+    }) as any
   }
 
   async delete(id: string): Promise<void> {

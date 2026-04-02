@@ -5,8 +5,8 @@ export interface IPostRepository {
   findById(id: string): Promise<Post | null>
   findAll(options?: { skip?: number; take?: number; where?: Record<string, unknown>; categoryId?: string }): Promise<Post[]>
   count(where?: Record<string, unknown>): Promise<number>
-  create(data: { title: string; content: string; authorId: string; categoryId?: string; imageUrls?: string }): Promise<Post>
-  update(id: string, data: { title?: string; content?: string; categoryId?: string; imageUrls?: string }): Promise<Post>
+  create(data: { title: string; content: string; authorId: string; categoryId?: string; imageUrls?: string | null }): Promise<Post>
+  update(id: string, data: { title?: string; content?: string; categoryId?: string; imageUrls?: string | null }): Promise<Post>
   delete(id: string): Promise<void>
   incrementViewCount(id: string): Promise<void>
   findAllForAdmin(options?: { search?: string; take?: number }): Promise<Post[]>
@@ -46,7 +46,7 @@ export class PostRepository implements IPostRepository {
     return prisma.post.count({ where })
   }
 
-  async create(data: { title: string; content: string; authorId: string; categoryId?: string; imageUrls?: string }): Promise<Post> {
+  async create(data: { title: string; content: string; authorId: string; categoryId?: string; imageUrls?: string | null }): Promise<Post> {
     return prisma.post.create({
       data,
       include: {
@@ -55,7 +55,7 @@ export class PostRepository implements IPostRepository {
     })
   }
 
-  async update(id: string, data: { title?: string; content?: string; categoryId?: string; imageUrls?: string }): Promise<Post> {
+  async update(id: string, data: { title?: string; content?: string; categoryId?: string; imageUrls?: string | null }): Promise<Post> {
     return prisma.post.update({
       where: { id },
       data,
